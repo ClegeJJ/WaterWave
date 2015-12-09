@@ -5,4 +5,4 @@ WaterWave
   ![演示图片][1]
 
 
-  [1]: https://github.com/zl00/WaterWave/WaterWave.gif
+  [1]: https://github.com/zl00/WaterWave/blob/master/WaterWave.gif
