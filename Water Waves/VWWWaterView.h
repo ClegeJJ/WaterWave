@@ -8,6 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol ZLWavePathDelegate <NSObject>
+
+- (void)wavePath:(CGMutablePathRef)path;
+@end
+
 @interface VWWWaterView : UIView
 
+@property (nonatomic) UIColor *waterColor;
+@property (nonatomic) float waterLevelY;
+@property (nonatomic, weak) id<ZLWavePathDelegate> waveDelegate;
 @end
