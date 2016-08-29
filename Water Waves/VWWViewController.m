@@ -17,12 +17,14 @@
 @property (nonatomic) UIFont *font;
 @property (nonatomic) UIView *labelView;
 @property (nonatomic) CAShapeLayer * maskLayer;
+@property (nonatomic) CTFontRef fontRef;
 @end
 
 @implementation VWWViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.fontRef = CTFontCreateWithName((__bridge CFStringRef)_font.fontName, _font.pointSize, NULL);
     [self customWaterWave];
     [self customLables];
     self.wview.waveDelegate = self;
@@ -60,7 +62,7 @@
     bound.origin.y = bound.origin.y;
     [text setFrame:bound];
     [text setString:(id)content];
-    [text setFont:CTFontCreateWithName((__bridge CFStringRef)_font.fontName, _font.pointSize, NULL)];
+    [text setFont:self.fontRef];
     [text setFontSize:_font.pointSize];
     
     [text setForegroundColor:[UIColor whiteColor].CGColor];
