@@ -10,13 +10,11 @@
 #import "VWWWaterView.h"
 #import <CoreText/CoreText.h>
 
-@interface VWWViewController ()<ZLWavePathDelegate>
+@interface VWWViewController ()
 
-@property (weak, nonatomic) IBOutlet VWWWaterView *wview;
+@property (strong, nonatomic) VWWWaterView *wview;
 
 @property (nonatomic) UIFont *font;
-@property (nonatomic) UIView *labelView;
-@property (nonatomic) CAShapeLayer * maskLayer;
 @property (nonatomic) CTFontRef fontRef;
 @end
 
@@ -26,53 +24,52 @@
     [super viewDidLoad];
     self.fontRef = CTFontCreateWithName((__bridge CFStringRef)_font.fontName, _font.pointSize, NULL);
     [self customWaterWave];
-    [self customLables];
-    self.wview.waveDelegate = self;
+    
+    CATextLayer *textLayer = [[CATextLayer alloc] init];
+    textLayer.foregroundColor = [UIColor blackColor].CGColor;
+    textLayer.alignmentMode = kCAAlignmentJustified;
+    textLayer.wrapped = YES;
+    
+    //choose a font
+    UIFont *font = [UIFont systemFontOfSize:15];
+    
+    //set layer font
+    CFStringRef fontName = (__bridge CFStringRef)font.fontName;
+    CGFontRef fontRef = CGFontCreateWithFontName(fontName);
+    textLayer.font = fontRef;
+    textLayer.fontSize = font.pointSize;
+    CGFontRelease(fontRef);
+    
+    //choose some text
+    NSString *text = @"abc";
+    
+    //set layer text
+    textLayer.string = text;
+    
+    
+    
+    
+    UIView *view = [UIView new];
+    view.frame = CGRectMake(0, 0, 100, 100);
+    view.backgroundColor = [UIColor redColor];
+    view.layer.sublayers = nil;
+    [view.layer addSublayer:textLayer];
+    
+    textLayer.frame = view.bounds;
+    textLayer.alignmentMode = kCAAlignmentCenter;
+    
+    [self.view addSubview:view];
+    
 }
 
 - (void)customWaterWave {
-    self.wview.waterColor = [UIColor colorWithRed:86/255.0f green:202/255.0f blue:139/255.0f alpha:1];
-    self.wview.waterLevelY = 50.f;
-}
-
-- (void)customLables {
-    _font = [UIFont systemFontOfSize:100.];
-    _labelView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 300, 100)];
-    [self.wview addSubview:_labelView];
-}
-
-#pragma mark - Update Text Layer
-- (void)updateMaskLayer:(CGMutablePathRef)p {
-    CATextLayer * text1 = [self createTextLayer:@"hello"];
-    CATextLayer * text2 = [self createTextLayer:@"hello"];
-    [text1 setForegroundColor:self.wview.waterColor.CGColor];
-    [text1 addSublayer:text2];
+    self.wview = [[VWWWaterView alloc] initWithFrame:CGRectMake(0, 200, 50, 50) waterColor:[UIColor blueColor] font:[UIFont systemFontOfSize:15] waterLevelY:0.5];
+//    self.wview.font = [UIFont systemFontOfSize:15];
+//    self.wview.waterColor = [UIColor blueColor];
+//    self.wview.waterLevelY = 0.5;
     
-    self.maskLayer = [[CAShapeLayer alloc] init];
-    self.maskLayer.path = p;
-    text2.mask = self.maskLayer;
-    
-    self.labelView.layer.sublayers = nil;
-    [self.labelView.layer addSublayer:text1];
+    [self.view addSubview:self.wview];
 }
 
-- (CATextLayer*)createTextLayer:(NSString*)content {
-    CATextLayer *text = [CATextLayer layer];
-    CGRect bound = _labelView.bounds;
-    bound.origin.y = bound.origin.y;
-    [text setFrame:bound];
-    [text setString:(id)content];
-    [text setFont:self.fontRef];
-    [text setFontSize:_font.pointSize];
-    
-    [text setForegroundColor:[UIColor whiteColor].CGColor];
-    [text setContentsScale:[[UIScreen mainScreen] scale]];
-    [text setBackgroundColor:[UIColor clearColor].CGColor];
-    return text;
-}
-
-#pragma mark ZLWavePathDelegate
-- (void)wavePath:(CGMutablePathRef)path {
-    [self updateMaskLayer:path];
-}
+ 
 @end

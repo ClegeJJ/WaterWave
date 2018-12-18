@@ -15,7 +15,13 @@
 
 @interface VWWWaterView : UIView
 
-@property (nonatomic) UIColor *waterColor;
-@property (nonatomic) float waterLevelY;
+@property (nonatomic, strong) UIColor *waterColor;
+@property (nonatomic, strong) UIFont *font;
+@property (nonatomic, assign) CGFloat waterLevelY;
+@property (nonatomic, assign) CGFloat a;
+@property (nonatomic, assign) CGFloat b;
 @property (nonatomic, weak) id<ZLWavePathDelegate> waveDelegate;
+
+- (instancetype)initWithFrame:(CGRect)frame waterColor:(UIColor *)waterColor font:(UIFont *)font waterLevelY:(CGFloat)waterLevelY;
+
 @end
